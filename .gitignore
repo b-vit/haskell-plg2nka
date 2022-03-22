@@ -1,0 +1,5 @@
+flp21-fun
+flp21-fun.exe
+*.o
+*.hi
+.gitattributes
