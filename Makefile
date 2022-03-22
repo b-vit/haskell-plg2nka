@@ -1,10 +1,10 @@
-#    Project: rlg-2-nfa (Czech: plg-2-nka)
-#    Author:   Vít Barták (xbarta47)
-#    Date:   22.03.2022
+#    Project: plg-2-nka (English: rlg-2-nfa)
+#    Author:  Vít Barták (xbarta47)
+#    Year:    2022
 
 
 COMPILER=ghc
-OBJ=src/Main.hs src/Parser.hs
+OBJ=src/Main.hs src/Parser.hs  src/Types.hs
 BIN=flp21-fun
 XLOGINXX=xbarta47
 

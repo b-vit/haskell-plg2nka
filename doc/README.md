@@ -1,4 +1,4 @@
-## plg2nka
+## rlg-2-nfa - Right Linear Grammar to Nondeterministic Finite Automaton
 ### A Haskell project
 The program converts Right Linear Grammar to a Nondeterministic Finite Automaton. 
 

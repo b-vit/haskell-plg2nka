@@ -3,3 +3,4 @@ flp21-fun.exe
 *.o
 *.hi
 .gitattributes
+.vscode

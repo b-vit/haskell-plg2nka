@@ -1,13 +1,13 @@
---   Project: rlg-2-dfa ( Czech: plg-2-nka )
---   Author:   Vít Barták (xbarta47)
+--    Project: plg-2-nka (English: rlg-2-nfa)
+--    Author:  Vít Barták (xbarta47)
+--    Year:    2022
 
 
 {-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
-import Parser (test)
+import Parser ()
 import Types ()
-import Data.Char ( isSpace )
 import System.Environment ( getArgs )   
 import System.Directory ()  
 import System.IO ()  
@@ -27,7 +27,7 @@ parseCmdLineArgs com fil
     | otherwise   = putStrLn "Input the arguments in format: -i [input_file] | -1 [input_file] | -2 [input_file]"
 
 printRLG :: String -> IO ()
-printRLG filename = putStrLn ("-i" ++ filename)
+printRLG filename = do putStrLn ("-i" ++ filename)
 
 printTransformedRLG :: String -> IO ()
 printTransformedRLG filename = putStrLn ("-1" ++ filename)
