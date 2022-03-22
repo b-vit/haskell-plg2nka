@@ -6,7 +6,6 @@
 COMPILER=ghc
 OBJ=src/Main.hs src/Parser.hs  src/Types.hs
 BIN=flp21-fun
-XLOGINXX=xbarta47
 
 all: GHCFLAGS:=-Wall --make $(OBJ) -o $(BIN)
 all: fun
