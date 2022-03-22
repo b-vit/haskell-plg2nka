@@ -15,7 +15,11 @@ data RLG = RLG {nonterminals :: [Char], terminals :: [Char], rules :: [(Char,[Ch
 removeDuplicatesFromRLG :: RLG -> RLG
 removeDuplicatesFromRLG (RLG n t r s) =  RLG {nonterminals = nub n, terminals = nub t, rules = nub r, startingSymbol = s}
 
--- Prints all rules in the form 'A->aB' each on its own line.
+-- Formats set from RLG and splits it by ','
+printElem :: [Char] -> [Char]
+printElem e = (unpack (intersperse ',' (pack e)))
+
+-- Returns all rules in the form 'A->aB' each on its own line.
 printRules :: [(Char,[Char])] -> String
 printRules [] = ""
 printRules [rule] = splitOneRule rule
@@ -28,12 +32,11 @@ splitOneRule rule =  [(fst rule)] ++ "->" ++ (snd rule)
 -- Printing RLG to the standard output
 showRLG :: RLG -> IO()
 showRLG (RLG n t r s) = do
-    putStrLn (unpack (intersperse ',' (pack n)))
-    putStrLn (unpack (intersperse ',' (pack t)))
+    putStrLn $ printElem n
+    putStrLn $ printElem t
     putStrLn [s]
     putStrLn $ printRules r
     
-
 -- Representation of nondeterministic finite automaton NFA M = (Q, Sigma, Delta, q0, F), delta is d: Q x Sigma -> 2^Q (implemented as (1,x,2))
 data NFA = NFA {states :: [Char], alphabet :: [Char], delta :: (Char,Char,Char), finalStates :: [Char]}
     deriving (Show)
