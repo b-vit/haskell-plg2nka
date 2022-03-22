@@ -4,6 +4,8 @@
 
 module Parser where
 
+-- TODO: parse RLG from the IO
+
 test :: IO ()
 test = putStrLn "Parser"
 

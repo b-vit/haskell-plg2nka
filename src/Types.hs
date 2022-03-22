@@ -3,14 +3,27 @@
 --    Year:    2022
 
 module Types where
-import Data.Text (intersperse, pack, unpack)
+import Data.Text (intersperse, pack, unpack, Text)
 import Data.List (nub)
 
--- Representation of the right linear grammar RLG G = (N,Sigma,P,S), where rules are list of tupples where one tupple represents one rule for example A -> aC
+
+
+-- Representation of the right linear grammar RLG G = (N,Sigma,P,S), where rules are list of tupples where one tupple represents one rule for example A -> aC.
 data RLG = RLG {nonterminals :: [Char], terminals :: [Char], rules :: [(Char,[Char])], startingSymbol :: Char}
 
+-- Nonterminals etc. are sets, not lists in Theoretical CS, this function removes duplicates - "making" a set out of list
 removeDuplicatesFromRLG :: RLG -> RLG
 removeDuplicatesFromRLG (RLG n t r s) =  RLG {nonterminals = nub n, terminals = nub t, rules = nub r, startingSymbol = s}
+
+-- Prints all rules in the form 'A->aB' each on its own line.
+printRules :: [(Char,[Char])] -> String
+printRules [] = ""
+printRules [rule] = splitOneRule rule
+printRules (rule:rules) = splitOneRule rule ++ "\n" ++ printRules rules
+
+-- Process one rule and format it into a string
+splitOneRule :: (Char,[Char]) -> String
+splitOneRule rule =  [(fst rule)] ++ "->" ++ (snd rule)
 
 -- Printing RLG to the standard output
 showRLG :: RLG -> IO()
@@ -18,7 +31,7 @@ showRLG (RLG n t r s) = do
     putStrLn (unpack (intersperse ',' (pack n)))
     putStrLn (unpack (intersperse ',' (pack t)))
     putStrLn [s]
-    --putStrLn r
+    putStrLn $ printRules r
     
 
 -- Representation of nondeterministic finite automaton NFA M = (Q, Sigma, Delta, q0, F), delta is d: Q x Sigma -> 2^Q (implemented as (1,x,2))

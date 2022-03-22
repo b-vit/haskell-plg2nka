@@ -2,8 +2,6 @@
 --    Author:  Vít Barták (xbarta47)
 --    Year:    2022
 
-
-{-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
 import Parser ()
@@ -13,6 +11,9 @@ import System.Directory ()
 import System.IO ()  
 import Data.List ()  
 
+
+
+-- The main driver code
 main :: IO ()
 main = do  
     (command:filename:args) <- getArgs  
