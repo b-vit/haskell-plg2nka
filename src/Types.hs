@@ -15,9 +15,9 @@ data RLG = RLG {nonterminals :: [Char], terminals :: [Char], rules :: [(Char,[Ch
 removeDuplicatesFromRLG :: RLG -> RLG
 removeDuplicatesFromRLG (RLG n t r s) =  RLG {nonterminals = nub n, terminals = nub t, rules = nub r, startingSymbol = s}
 
--- Formats set from RLG and splits it by ','
+-- Formats string and splits it by ','
 printElem :: [Char] -> [Char]
-printElem e = (unpack (intersperse ',' (pack e)))
+printElem e = unpack (intersperse ',' (pack e))
 
 -- Returns all rules in the form 'A->aB' each on its own line.
 printRules :: [(Char,[Char])] -> String
@@ -27,7 +27,7 @@ printRules (rule:rules) = splitOneRule rule ++ "\n" ++ printRules rules
 
 -- Process one rule and format it into a string
 splitOneRule :: (Char,[Char]) -> String
-splitOneRule rule =  [(fst rule)] ++ "->" ++ (snd rule)
+splitOneRule rule =  [fst rule] ++ "->" ++ snd rule
 
 -- Printing RLG to the standard output
 showRLG :: RLG -> IO()

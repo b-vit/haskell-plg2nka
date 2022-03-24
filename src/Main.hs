@@ -4,34 +4,38 @@
 
 module Main where
 
-import Parser ()
+import Parser ( crunchRLG, wrongArgs )
 import Types ()
 import System.Environment ( getArgs )   
 import System.Directory ()  
 import System.IO ()  
 import Data.List ()  
+import Control.Exception (TypeError)
 
 
 
 -- The main driver code
 main :: IO ()
 main = do  
-    (command:filename:args) <- getArgs  
-    parseCmdLineArgs command filename
+    (command:args) <- getArgs  
+    parseCmdLineArgs command args
+
+-- UDĚLAT ROZHODOVACÍ VĚTEV UŽ TADY, KTERÁ ROZHODNE, ZDA ČTU STDIN NEBO FILE
 
 -- Parse command line arguments and decide, which branch of the program to take.
-parseCmdLineArgs :: String -> String -> IO ()
-parseCmdLineArgs com fil 
-    | com == "-i" = printRLG fil     
-    | com == "-1" = printTransformedRLG fil
-    | com == "-2" = printNFA fil
-    | otherwise   = putStrLn "Input the arguments in format: -i [input_file] | -1 [input_file] | -2 [input_file]"
+parseCmdLineArgs :: String -> [String] -> IO ()
+parseCmdLineArgs com args 
+    | com == "-i" = printRLG args -- Nejdřív vemu všechny args a pošlu je do printRLG, který si s tim poradí
+    | com == "-1" = printTransformedRLG args
+    | com == "-2" = printNFA args 
+    | otherwise   = wrongArgs 
 
-printRLG :: String -> IO ()
-printRLG filename = do putStrLn ("-i" ++ filename)
+printRLG ::  [String] -> IO ()
+printRLG args = do crunchRLG args
 
-printTransformedRLG :: String -> IO ()
-printTransformedRLG filename = putStrLn ("-1" ++ filename)
 
-printNFA :: String -> IO ()
-printNFA filename = putStrLn ("-2" ++ filename)
+printTransformedRLG ::  [String] -> IO ()
+printTransformedRLG filename = putStrLn ("-1")
+
+printNFA ::  [String] -> IO ()
+printNFA filename = putStrLn ("-2")

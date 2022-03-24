@@ -1,0 +1,15 @@
+flp21-fun: Input the grammar in format: 
+ Nonterminals 
+ Terminals
+ Starting Symbol
+ Production Rules
+ for example:
+ A,B
+ a,b
+ A
+ A->B
+ B->A
+ ...
+ B->#
+CallStack (from HasCallStack):
+  error, called at src/Parser.hs:19:5 in main:Parser
