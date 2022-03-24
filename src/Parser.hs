@@ -22,7 +22,7 @@ wrongGrammarFormat =
 
 -- Load RLG from the IO, if args are list with one element, it might be filename, otherwise parse standard input
 crunchRLG ::  [String] -> IO ()
-crunchRLG [] = wrongArgs
+crunchRLG [] = wrongArgs -- Tohle dělá problém, protože to v tu chvíli ještě nemá getContents
 crunchRLG [file]  = do
         linesList <- fmap T.lines (T.readFile file)
         if length linesList < 4
@@ -51,6 +51,6 @@ parseRLG (nonterminals:terminals:startingSymbol:productionRules) = do
     let test = RLG (parseSymbols nonterminals) (parseSymbols terminals)  productionRulesParsed (head $ unpack startingSymbol)
     showRLG test -- TODO if -i, just show it, if -1 then do "something" with it, if -2 then create and print the NFA
 
--- Checks, whether the right linear grammar has valid structure
+-- Checks, whether the right linear grammar has valid structure (A-Z, a-z, one of A-Z, and valid rules)
 isRLGValid :: IO() 
 isRLGValid = putStrLn "eh"
