@@ -3,7 +3,7 @@
 --    Year:    2022
 
 module Types where
-import Data.Text (intersperse, pack, unpack, Text)
+import Data.Text (intersperse, pack, unpack)
 import Data.List (nub)
 
 
@@ -17,13 +17,13 @@ removeDuplicatesFromRLG (RLG n t r s) =  RLG {nonterminals = nub n, terminals = 
 
 -- Formats string and splits it by ','
 printElem :: [Char] -> [Char]
-printElem e = unpack (intersperse ',' (pack e))
+printElem e = init $ unpack (intersperse ',' (pack e))
 
 -- Returns all rules in the form 'A->aB' each on its own line.
 printRules :: [(Char,[Char])] -> String
 printRules [] = ""
 printRules [rule] = splitOneRule rule
-printRules (rule:rules) = splitOneRule rule ++ "\n" ++ printRules rules
+printRules (rule:remRules) = splitOneRule rule ++ "\n" ++ printRules remRules
 
 -- Process one rule and format it into a string
 splitOneRule :: (Char,[Char]) -> String
