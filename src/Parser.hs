@@ -1,56 +1,63 @@
+{-# LANGUAGE RecordWildCards #-}
 --    Project: plg-2-nka (English: rlg-2-nfa)
 --    Author:  Vít Barták (xbarta47)
 --    Year:    2022
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 
 module Parser where
-import Types (RLG (RLG), showRLG)
-import System.IO
-import qualified Data.Text    as T
-import qualified Data.Text.IO as T
-import Data.Text (pack, unpack, Text, replace)
 
--- Error thrown on wrong arguments
-wrongArgs :: t
-wrongArgs = 
-    error "Input the arguments in format: {-i | -1 | -2} [input_file | RLG on STDIN]"
+import Control.Arrow (left)
+import Control.Monad ((<=<))
+import Data.Set (Set, fromList)
+import Text.Parsec (alphaNum, char, endBy, eof, many1, newline, parse, satisfy, sepBy1, string, (<|>))
+import Text.Parsec.String (Parser)
+import Types (RLG (..), Rule (Rule, fromNonterm), removeDuplicatesFromRLG)
 
--- Error thrown on wrong grammar format
-wrongGrammarFormat :: t
-wrongGrammarFormat =
-    error "Input the grammar in format: \n Nonterminals \n Terminals \n Starting Symbol \n Production Rules \nfor example: \n A,B \n a,b \n A \n A->B\n B->A \n ... \n B->#"
+-- Parse the whole RLG and validate it
+parseRLG :: String -> Either String RLG
+parseRLG = validateRLG <=< left show . parse rlgParser ""
 
--- Load RLG from the IO, if args are list with one element, it might be filename, otherwise parse standard input
-crunchRLG ::  [String] -> IO ()
-crunchRLG [] = wrongArgs -- Tohle dělá problém, protože to v tu chvíli ještě nemá getContents
-crunchRLG [file]  = do
-        linesList <- fmap T.lines (T.readFile file)
-        if length linesList < 4
-            then wrongGrammarFormat
-            else parseRLG linesList
-crunchRLG args = parseSTDIN -- args
+-- Parse the RLG
+rlgParser :: Parser RLG
+rlgParser =
+  RLG <$> alfanumericsParser <* newline
+    <*> alfanumericsParser <* newline
+    <*> startingSymbolParser <* newline
+    <*> rulesParser <* eof
 
--- Parses RLG from STDIN if filename is not defined, expecting the form Nonterminals \n Terminals \n Starting Symbol \n Production Rules
-parseSTDIN ::  IO ()
-parseSTDIN = do
-    contents <- getContents  
-    putStr contents  
+-- Parse the symbols that are alphanumerics
+alfanumericsParser :: Parser [[Char]]
+alfanumericsParser = sepBy1 symbolsParser comma
 
--- Parses one rule, gets first symbol, drops (->) and gets the rest
-parseOneRule :: Text -> (Char,[Char])
-parseOneRule rule = (head $ unpack rule, tail $ unpack $ replace (pack "->") (pack "") rule)
+-- Parse one symbol
+symbolsParser :: Parser [Char]
+symbolsParser = many1 alphaNum <|> endingSymbol
 
--- Removes commas from Text of symbols and then return them as a [Char] (list of chars - String)
-parseSymbols :: Text -> [Char]
-parseSymbols symbols = unpack $ replace (pack ",") (pack "") symbols
+-- Parse starting symbol
+startingSymbolParser :: Parser Char
+startingSymbolParser = satisfy (`elem` ['A' .. 'Z'])
 
-parseRLG :: [Text] -> IO ()
-parseRLG [] = wrongArgs
-parseRLG (nonterminals:terminals:startingSymbol:productionRules) = do
-    let productionRulesParsed = map parseOneRule productionRules
-    let test = RLG (parseSymbols nonterminals) (parseSymbols terminals)  productionRulesParsed (head $ unpack startingSymbol)
-    showRLG test -- TODO if -i, just show it, if -1 then do "something" with it, if -2 then create and print the NFA
+-- Parse rules that are each on its own line
+rulesParser :: Parser (Set Rule)
+rulesParser = fromList <$> endBy ruleParser newline
 
--- Checks, whether the right linear grammar has valid structure (A-Z, a-z, one of A-Z, and valid rules)
-isRLGValid :: IO() 
-isRLGValid = putStrLn "eh"
+-- Parse one rule
+ruleParser :: Parser Rule
+ruleParser = Rule <$> symbolsParser <* arr <*> symbolsParser
+
+comma :: Parser Char
+comma = char ','
+
+endingSymbol :: Parser String
+endingSymbol = string "#"
+
+arr :: Parser String
+arr = string "->"
+
+-- Validate the RLG
+validateRLG :: RLG -> Either String RLG
+validateRLG rlg@RLG {..} = if allOK then Right $ removeDuplicatesFromRLG rlg else Left "invalid RLG"
+  where
+    allOK =
+      all ((`elem` nonterminals) . fromNonterm) rules
+        && elem [startingSymbol] nonterminals
