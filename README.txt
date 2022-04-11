@@ -1,2 +1,0 @@
-Hotovo: Implementoval jsem pouze načtení ze souboru a parsování gramatiky do vnitřní reprezentace a následný výpis (tedy pouze přepínač -i). Neobjevují se v ní duplicity (jsou odstraněny). 
-Nedostatky: vstupní gramatika musí končit new-linem LF, jinak se nepovede naparsovat. Nedokážu číst z STDIN, pouze ze souboru např.: ./flp21-fun.exe -i test/test1.in
