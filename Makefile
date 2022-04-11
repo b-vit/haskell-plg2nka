@@ -14,4 +14,4 @@ fun: $(OBJ)
 	$(COMPILER) $(GHCFLAGS)
 
 zip: 
-	zip -r flp-fun-xbarta47 src/*.hs doc/* test/* Makefile
+	zip -r flp-fun-xbarta47 src/*.hs README.txt test/* Makefile
